@@ -1,0 +1,20 @@
+﻿using Domain.Entities;
+using Domain.Interfaces;
+
+namespace Infrastructure.Repositories;
+
+public class InMemoryEmployeeRepository : IEmployeeRepository
+{
+    private static readonly List<Employee> _employees = new();
+
+    public Task CreateAsync(Employee employee, CancellationToken cancellationToken)
+    {
+        _employees.Add(employee);
+        return Task.CompletedTask;
+    }
+
+    public Task<Employee?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    {
+        return Task.FromResult(_employees.FirstOrDefault(e => e.Id == id));
+    }
+}
