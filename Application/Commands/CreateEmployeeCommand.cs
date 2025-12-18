@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using CSharpFunctionalExtensions;
 using Domain.Enums;
+using Domain.Entities;
 
 namespace Application.Employees.Create;
 
@@ -12,5 +13,6 @@ public record CreateEmployeeCommand(
     DateTime BirthDate,
     Role Role,
     Guid? ManagerId,
-    List<string> Phones
+    List<Phone> Phones,
+    string Password
 ) : IRequest<Result<Guid>>;
