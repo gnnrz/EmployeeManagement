@@ -57,4 +57,29 @@ public class Employee
 
         return employee;
     }
+
+    public void Update(
+    string firstName,
+    string lastName,
+    string email,
+    string document,
+    DateTime birthDate,
+    Role role,
+    Guid? managerId,
+    IEnumerable<Phone> phones)
+    {
+        EmployeeRules.ValidateAge(birthDate);
+        EmployeeRules.ValidatePhones(phones);
+
+        FirstName = firstName;
+        LastName = lastName;
+        Email = email;
+        Document = document;
+        BirthDate = birthDate;
+        Role = role;
+        ManagerId = managerId;
+
+        _phones.Clear();
+        _phones.AddRange(phones);
+    }
 }

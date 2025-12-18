@@ -1,5 +1,4 @@
-﻿using Domain.Entities;
-using Domain.Interfaces;
+﻿using Domain.Interfaces;
 
 namespace Infrastructure.Repositories;
 
@@ -13,8 +12,24 @@ public class InMemoryEmployeeRepository : IEmployeeRepository
         return Task.CompletedTask;
     }
 
+    public Task<IEnumerable<Employee>> GetAllAsync(CancellationToken cancellationToken)
+    {
+        return Task.FromResult(_employees.AsEnumerable());
+    }
+
     public Task<Employee?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return Task.FromResult(_employees.FirstOrDefault(e => e.Id == id));
+    }
+
+    public Task UpdateAsync(Employee employee, CancellationToken cancellationToken)
+    {
+        return Task.CompletedTask;
+    }
+
+    public Task DeleteAsync(Employee employee, CancellationToken cancellationToken)
+    {
+        _employees.Remove(employee);
+        return Task.CompletedTask;
     }
 }
