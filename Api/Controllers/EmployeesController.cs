@@ -1,4 +1,8 @@
 using Application.Employees.Create;
+using Application.Employees.Delete;
+using Application.Employees.GetAll;
+using Application.Employees.GetById;
+using Application.Employees.Update;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,6 +19,10 @@ namespace Api.Controllers.EmployeesController
             _mediator = mediator;
         }
 
+
+        /// <summary>
+        /// Create employees
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> Create(
                 [FromBody] CreateEmployeeRequest request,
@@ -27,13 +35,79 @@ namespace Api.Controllers.EmployeesController
             if (result.IsFailure)
                 return BadRequest(new { error = result.Error });
 
-            return CreatedAtAction(nameof(GetById), new { id = result.Value }, null);
+            return Ok();
         }
 
-        [HttpGet("{id:guid}")]
-        public async Task<IActionResult> GetById(Guid id)
+        /// <summary>
+        /// Returns all employees
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            return Ok(); // stub por enquanto
+            var employees = await _mediator.Send(
+                new GetAllEmployeesQuery(),
+                cancellationToken
+            );
+
+            return Ok(employees);
+        }
+
+        /// <summary>
+        /// Returns an employee by id
+        /// </summary>
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> GetById(
+            Guid id,
+            CancellationToken cancellationToken)
+        {
+            var employee = await _mediator.Send(
+                new GetEmployeeByIdQuery(id),
+                cancellationToken
+            );
+
+            if (employee is null)
+                return NotFound();
+
+            return Ok(employee);
+        }
+
+        /// <summary>
+        /// Updates an employee
+        /// </summary>
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> Update(
+            Guid id,
+            [FromBody] UpdateEmployeeRequest request,
+            CancellationToken cancellationToken)
+        {
+            var success = await _mediator.Send(
+                request.ToCommand(id),
+                cancellationToken
+            );
+
+            if (!success)
+                return NotFound();
+
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Deletes an employee
+        /// </summary>
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> Delete(
+            Guid id,
+            CancellationToken cancellationToken)
+        {
+            var success = await _mediator.Send(
+                new DeleteEmployeeCommand(id),
+                cancellationToken
+            );
+
+            if (!success)
+                return NotFound();
+
+            return NoContent();
         }
     }
 }
