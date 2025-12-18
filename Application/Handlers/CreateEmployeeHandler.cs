@@ -1,9 +1,7 @@
 ﻿using MediatR;
 using CSharpFunctionalExtensions;
-using Domain.Entities;
 using Domain.Interfaces;
 using Application.Common.Interfaces;
-using Domain.Rules;
 
 namespace Application.Employees.Create;
 
@@ -25,8 +23,12 @@ public class CreateEmployeeHandler
         CreateEmployeeCommand request,
         CancellationToken cancellationToken)
     {
-        EmployeeRules.ValidateAge(request.BirthDate);
-        EmployeeRules.ValidateRoleCreation(_currentUser.Role, request.Role);
+        EmployeeRules.ValidateRoleHierarchy(
+            _currentUser.Role,
+            request.Role
+        );
+
+        var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
         var employee = Employee.Create(
             request.FirstName,
@@ -36,7 +38,8 @@ public class CreateEmployeeHandler
             request.BirthDate,
             request.Role,
             request.ManagerId,
-            request.Phones
+            request.Phones,
+            passwordHash
         );
 
         await _repository.CreateAsync(employee, cancellationToken);

@@ -1,20 +1,22 @@
-﻿using Domain.Enums;
+﻿using Domain.Entities;
+using Domain.Enums;
 
 namespace Application.Employees.Create;
 
-public class CreateEmployeeRequest
+public record CreateEmployeeRequest(
+    string FirstName,
+    string LastName,
+    string Email,
+    string Document,
+    DateTime BirthDate,
+    Role Role,
+    Guid? ManagerId,
+    List<string> Phones,
+    string Password
+)
 {
-    public string FirstName { get; set; } = null!;
-    public string LastName { get; set; } = null!;
-    public string Email { get; set; } = null!;
-    public string Document { get; set; } = null!;
-    public DateTime BirthDate { get; set; }
-    public Role Role { get; set; }
-    public Guid? ManagerId { get; set; }
-    public List<string> Phones { get; set; } = new();
-
     public CreateEmployeeCommand ToCommand()
-        => new(
+        => new CreateEmployeeCommand(
             FirstName,
             LastName,
             Email,
@@ -23,5 +25,8 @@ public class CreateEmployeeRequest
             Role,
             ManagerId,
             Phones
+                .Select(p => new Phone(p))
+                .ToList(),
+            Password
         );
 }
