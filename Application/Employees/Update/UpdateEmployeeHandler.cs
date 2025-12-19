@@ -22,6 +22,11 @@ public class UpdateEmployeeHandler
 
     public async Task<Result> Handle(UpdateEmployeeCommand request, CancellationToken cancellationToken)
     {
+        EmployeeRules.ValidateRoleHierarchy(
+            _currentUser.Role,
+            request.Role
+        );
+
         var employee = await _repository.GetByIdAsync(request.Id, cancellationToken);
 
         if (employee is null)

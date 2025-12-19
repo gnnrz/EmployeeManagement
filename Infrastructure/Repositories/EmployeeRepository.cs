@@ -43,4 +43,13 @@ public class EmployeeRepository : IEmployeeRepository
         _context.Employees.Remove(employee);
         await _context.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task<Employee?> GetByEmailAsync(
+    string email,
+    CancellationToken cancellationToken)
+    {
+        return await _context.Employees
+            .Include(e => e.Phones)
+            .FirstOrDefaultAsync(e => e.Email == email, cancellationToken);
+    }
 }

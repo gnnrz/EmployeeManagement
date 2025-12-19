@@ -4,6 +4,7 @@ using Application.Employees.GetAll;
 using Application.Employees.GetById;
 using Application.Employees.Update;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers.EmployeesController
@@ -19,11 +20,11 @@ namespace Api.Controllers.EmployeesController
             _mediator = mediator;
         }
 
-
         /// <summary>
         /// Create employees
         /// </summary>
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Create(
                 [FromBody] CreateEmployeeRequest request,
                 CancellationToken cancellationToken)
@@ -42,6 +43,7 @@ namespace Api.Controllers.EmployeesController
         /// Returns all employees
         /// </summary>
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
             var employees = await _mediator.Send(
@@ -56,6 +58,7 @@ namespace Api.Controllers.EmployeesController
         /// Returns an employee by id
         /// </summary>
         [HttpGet("{id:guid}")]
+        [Authorize]
         public async Task<IActionResult> GetById(
             Guid id,
             CancellationToken cancellationToken)
@@ -75,6 +78,7 @@ namespace Api.Controllers.EmployeesController
         /// Updates an employee
         /// </summary>
         [HttpPut("{id:guid}")]
+        [Authorize]
         public async Task<IActionResult> Update(
             Guid id,
             [FromBody] UpdateEmployeeRequest request,
@@ -95,6 +99,7 @@ namespace Api.Controllers.EmployeesController
         /// Deletes an employee
         /// </summary>
         [HttpDelete("{id:guid}")]
+        [Authorize]
         public async Task<IActionResult> Delete(
             Guid id,
             CancellationToken cancellationToken)
