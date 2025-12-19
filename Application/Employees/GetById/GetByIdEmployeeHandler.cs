@@ -1,25 +1,38 @@
-﻿using Domain.Interfaces;
+﻿using Application.Employees.GetById;
+using Domain.Interfaces;
 using MediatR;
 
-namespace Application.Employees.GetById;
-
-public class GetEmployeeByIdHandler
-    : IRequestHandler<GetEmployeeByIdQuery, Employee?>
+public class GetByIdEmployeeHandler
+    : IRequestHandler<GetByIdEmployeeQuery, EmployeeResponse?>
 {
     private readonly IEmployeeRepository _repository;
 
-    public GetEmployeeByIdHandler(IEmployeeRepository repository)
+    public GetByIdEmployeeHandler(IEmployeeRepository repository)
     {
         _repository = repository;
     }
 
-    public async Task<Employee?> Handle(
-        GetEmployeeByIdQuery request,
+    public async Task<EmployeeResponse?> Handle(
+        GetByIdEmployeeQuery request,
         CancellationToken cancellationToken)
     {
-        return await _repository.GetByIdAsync(
+        var employee = await _repository.GetByIdAsync(
             request.Id,
             cancellationToken
+        );
+
+        if (employee is null)
+            return null;
+
+        return new EmployeeResponse(
+            employee.Id,
+            employee.FirstName,
+            employee.LastName,
+            employee.Email,
+            employee.Document,
+            employee.Role,
+            employee.ManagerId,
+            employee.Phones.Select(p => p.Number).ToList()
         );
     }
 }

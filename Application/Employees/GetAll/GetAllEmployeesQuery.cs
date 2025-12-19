@@ -2,4 +2,5 @@
 
 namespace Application.Employees.GetAll;
 
-public record GetAllEmployeesQuery() : IRequest<IEnumerable<Employee>>;
+public record GetAllEmployeesQuery
+    : IRequest<List<EmployeeResponse>>;

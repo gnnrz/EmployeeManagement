@@ -1,6 +1,6 @@
-﻿using Domain.Entities;
+﻿using MediatR;
+using CSharpFunctionalExtensions;
 using Domain.Enums;
-using MediatR;
 
 namespace Application.Employees.Update;
 
@@ -9,9 +9,7 @@ public record UpdateEmployeeCommand(
     string FirstName,
     string LastName,
     string Email,
-    string Document,
-    DateTime BirthDate,
     Role Role,
     Guid? ManagerId,
-    List<Phone> Phones
-) : IRequest<bool>;
+    List<string> Phones
+) : IRequest<Result>;

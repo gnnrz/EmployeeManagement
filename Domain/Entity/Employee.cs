@@ -3,8 +3,6 @@ using Domain.Enums;
 
 public class Employee
 {
-    private readonly List<Phone> _phones = new();
-
     public Guid Id { get; private set; }
     public string FirstName { get; private set; }
     public string LastName { get; private set; }
@@ -14,14 +12,37 @@ public class Employee
     public Role Role { get; private set; }
     public Guid? ManagerId { get; private set; }
     public string PasswordHash { get; private set; }
+    public List<Phone> Phones { get; private set; } = new();
 
-    public IReadOnlyCollection<Phone> Phones => _phones;
 
     protected Employee() { }
 
     private void AddPhones(IEnumerable<Phone> phones)
     {
-        _phones.AddRange(phones);
+        Phones.AddRange(phones);
+    }
+
+    public void ReplacePhones(IEnumerable<Phone> phones)
+    {
+        EmployeeRules.ValidatePhones(phones);
+
+        Phones.Clear();
+        Phones.AddRange(phones);
+    }
+
+    public void UpdateBasicInfo(
+    string firstName,
+    string lastName,
+    string email,
+    Role role,
+    Guid? managerId
+    )
+    {
+        FirstName = firstName;
+        LastName = lastName;
+        Email = email;
+        Role = role;
+        ManagerId = managerId;
     }
 
     public static Employee Create(
@@ -79,7 +100,7 @@ public class Employee
         Role = role;
         ManagerId = managerId;
 
-        _phones.Clear();
-        _phones.AddRange(phones);
+        Phones.Clear();
+        Phones.AddRange(phones);
     }
 }
