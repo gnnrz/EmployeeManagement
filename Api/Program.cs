@@ -1,5 +1,6 @@
 using Api.IoC;
 using Application.Employees.Create;
+using Infrastructure.IoC;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.RegisterServices(builder.Configuration);
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(CreateEmployeeCommand).Assembly));
+builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 app.UseSwagger();

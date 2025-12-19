@@ -61,7 +61,7 @@ namespace Api.Controllers.EmployeesController
             CancellationToken cancellationToken)
         {
             var employee = await _mediator.Send(
-                new GetEmployeeByIdQuery(id),
+                new GetByIdEmployeeQuery(id),
                 cancellationToken
             );
 
@@ -80,13 +80,13 @@ namespace Api.Controllers.EmployeesController
             [FromBody] UpdateEmployeeRequest request,
             CancellationToken cancellationToken)
         {
-            var success = await _mediator.Send(
+            var result = await _mediator.Send(
                 request.ToCommand(id),
                 cancellationToken
             );
 
-            if (!success)
-                return NotFound();
+            if (result.IsFailure)
+                return NotFound(result.Error);
 
             return NoContent();
         }
@@ -99,13 +99,13 @@ namespace Api.Controllers.EmployeesController
             Guid id,
             CancellationToken cancellationToken)
         {
-            var success = await _mediator.Send(
+            var result = await _mediator.Send(
                 new DeleteEmployeeCommand(id),
                 cancellationToken
             );
 
-            if (!success)
-                return NotFound();
+            if (result.IsFailure)
+                return NotFound(result.Error);
 
             return NoContent();
         }

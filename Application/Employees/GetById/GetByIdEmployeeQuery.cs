@@ -2,5 +2,5 @@
 
 namespace Application.Employees.GetById;
 
-public record GetEmployeeByIdQuery(Guid Id)
-    : IRequest<Employee?>;
+public record GetByIdEmployeeQuery(Guid Id)
+    : IRequest<EmployeeResponse?>;

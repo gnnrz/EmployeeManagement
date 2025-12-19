@@ -2,16 +2,14 @@
 
 public class Phone
 {
-    public Guid Id { get; private set; } = Guid.NewGuid();
-    public string Number { get; private set; }
+    public Guid Id { get; private set; }
+    public string Number { get; private set; } = null!;
+    public Guid EmployeeId { get; private set; }
 
     private Phone() { }
 
     public Phone(string number)
     {
-        if (string.IsNullOrWhiteSpace(number))
-            throw new ArgumentException("Phone number is required.");
-
         Number = number;
     }
 }

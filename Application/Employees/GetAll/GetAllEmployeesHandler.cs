@@ -5,7 +5,7 @@ using MediatR;
 namespace Application.Employees.Queries;
 
 public class GetAllEmployeesHandler
-    : IRequestHandler<GetAllEmployeesQuery, IEnumerable<Employee>>
+    : IRequestHandler<GetAllEmployeesQuery, List<EmployeeResponse>>
 {
     private readonly IEmployeeRepository _repository;
 
@@ -14,10 +14,21 @@ public class GetAllEmployeesHandler
         _repository = repository;
     }
 
-    public async Task<IEnumerable<Employee>> Handle(
+    public async Task<List<EmployeeResponse>> Handle(
         GetAllEmployeesQuery request,
         CancellationToken cancellationToken)
     {
-        return await _repository.GetAllAsync(cancellationToken);
+        var employees = await _repository.GetAllAsync(cancellationToken);
+
+        return employees.Select(e => new EmployeeResponse(
+            e.Id,
+            e.FirstName,
+            e.LastName,
+            e.Email,
+            e.Document,
+            e.Role,
+            e.ManagerId,
+            e.Phones.Select(p => p.Number).ToList()
+        )).ToList();
     }
 }

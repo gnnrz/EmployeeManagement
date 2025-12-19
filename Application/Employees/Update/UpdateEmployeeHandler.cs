@@ -1,11 +1,13 @@
 ﻿using Application.Common.Interfaces;
+using CSharpFunctionalExtensions;
+using Domain.Entities;
 using Domain.Interfaces;
 using MediatR;
 
 namespace Application.Employees.Update;
 
 public class UpdateEmployeeHandler
-    : IRequestHandler<UpdateEmployeeCommand, bool>
+    : IRequestHandler<UpdateEmployeeCommand, Result>
 {
     private readonly IEmployeeRepository _repository;
     private readonly ICurrentUser _currentUser;
@@ -18,35 +20,27 @@ public class UpdateEmployeeHandler
         _currentUser = currentUser;
     }
 
-    public async Task<bool> Handle(
-        UpdateEmployeeCommand request,
-        CancellationToken cancellationToken)
+    public async Task<Result> Handle(UpdateEmployeeCommand request, CancellationToken cancellationToken)
     {
-        var employee = await _repository.GetByIdAsync(
-            request.Id,
-            cancellationToken
-        );
+        var employee = await _repository.GetByIdAsync(request.Id, cancellationToken);
 
         if (employee is null)
-            return false;
+            return Result.Failure("Employee not found");
 
-        EmployeeRules.ValidateRoleHierarchy(
-            _currentUser.Role,
-            request.Role
-        );
-
-        employee.Update(
+        employee.UpdateBasicInfo(
             request.FirstName,
             request.LastName,
             request.Email,
-            request.Document,
-            request.BirthDate,
             request.Role,
-            request.ManagerId,
-            request.Phones
+            request.ManagerId
+        );
+
+        employee.ReplacePhones(
+            request.Phones.Select(p => new Phone(p))
         );
 
         await _repository.UpdateAsync(employee, cancellationToken);
-        return true;
+
+        return Result.Success();
     }
 }
