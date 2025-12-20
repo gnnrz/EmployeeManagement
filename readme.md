@@ -40,7 +40,7 @@ POST /api/auth/login
 ```json
 {
   "email": "admin@admin.com",
-  "password": "Admin@123"
+  "password": "admin@123"
 }
 ```
 
