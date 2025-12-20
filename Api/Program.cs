@@ -1,23 +1,32 @@
 using Api.IoC;
 using Application.Employees.Create;
 using Infrastructure.IoC;
+using Infrastructure.Persistence;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCors();
-builder.Services.AddProblemDetails();
 builder.Services.AddControllers();
+builder.Services.AddProblemDetails();
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Default", policy =>
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader());
+});
+
 builder.Services.RegisterServices(builder.Configuration);
+builder.Services.AddInfrastructure(builder.Configuration);
+
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(CreateEmployeeCommand).Assembly));
-builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
@@ -74,18 +83,20 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-builder.Services.AddHttpContextAccessor();
-
-
 var app = builder.Build();
+
 app.UseSwagger();
 app.UseSwaggerUI();
+
 app.UseHttpsRedirection();
 
-app.UseCors(builder => builder
-    .SetIsOriginAllowed(origin => true)
-    .AllowAnyMethod()
-    .AllowAnyHeader()
-    .AllowCredentials());
+app.UseCors("Default");
+
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapControllers();
+
+await DbInitializer.SeedAsync(app.Services);
+
 app.Run();
