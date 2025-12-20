@@ -2,6 +2,7 @@
 using CSharpFunctionalExtensions;
 using Domain.Interfaces;
 using Application.Common.Interfaces;
+using Domain.Entities;
 
 namespace Application.Employees.Create;
 
