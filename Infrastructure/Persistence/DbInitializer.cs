@@ -23,7 +23,7 @@ public static class DbInitializer
             email: "admin@employee.com",
             document: "00000000000",
             birthDate: DateTime.Today.AddYears(-30),
-            role: Role.Director, // role mais alta
+            role: Role.Director,
             managerId: null,
             phones: new[]
             {
