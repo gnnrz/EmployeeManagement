@@ -1,27 +1,20 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../../shared/api";
+import { useAuth } from "../../auth/useAuth";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const { login } = useAuth();
 
   const navigate = useNavigate();
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
 
     try {
-      const response = await api.post("/auth/login", {
-        email,
-        password,
-      });
-
-      const token = response.data.accessToken;
-      localStorage.setItem("token", token);
-
+      await login(email, password);
       navigate("/employees/create");
     } catch {
       setError("Invalid credentials");
