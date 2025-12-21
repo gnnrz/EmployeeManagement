@@ -1,10 +1,13 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../../shared/api";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+  const navigate = useNavigate();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -17,46 +20,44 @@ export default function LoginPage() {
       });
 
       const token = response.data.accessToken;
-
       localStorage.setItem("token", token);
 
-      window.location.href = "/employees/create";
-    } catch (err: any) {
+      navigate("/employees/create");
+    } catch {
       setError("Invalid credentials");
     }
   }
 
   return (
-    <div style={{ maxWidth: 400, margin: "50px auto" }}>
-      <h2>Login</h2>
+    <div className="container">
+      <div className="card">
+        <h2>Employee Management</h2>
+        <p style={{ textAlign: "center", marginBottom: 12 }}>
+          Sign in to continue
+        </p>
 
-      <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
+        {error && <p className="error">{error}</p>}
 
-        <br />
-        <br />
+        <form onSubmit={handleSubmit}>
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
 
-        <br />
-        <br />
-
-        <button type="submit">Login</button>
-
-        {error && <p style={{ color: "red" }}>{error}</p>}
-      </form>
+          <button type="submit">Login</button>
+        </form>
+      </div>
     </div>
   );
 }
