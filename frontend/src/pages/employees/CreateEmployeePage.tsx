@@ -22,7 +22,6 @@ export default function CreateEmployeePage() {
   const [error, setError] = useState("");
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
-  // ✅ LER USUÁRIO LOGADO DO TOKEN
   const token = localStorage.getItem("token");
 
   let welcomeName = "User";
