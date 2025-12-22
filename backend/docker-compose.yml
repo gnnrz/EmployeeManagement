@@ -30,7 +30,6 @@ services:
       ConnectionStrings__DefaultConnection: "Server=sqlserver;Database=EmployeeDb;User Id=sa;Password=StrongPassword!123;TrustServerCertificate=True"
     ports:
       - "8080:8080"
-    command: ["dotnet", "Api.dll"]
 
 volumes:
   sql_data:
