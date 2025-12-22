@@ -39,7 +39,7 @@ POST /api/auth/login
 #### Example request:
 ```json
 {
-  "email": "admin@admin.com",
+  "email": "admin@employee.com",
   "password": "admin@123"
 }
 ```
@@ -58,7 +58,7 @@ POST /api/auth/login
 When the application starts, a **master admin user** is automatically created:
 
 ```text
-Email: admin@admin.com
+Email: admin@employee.com
 Password: admin@123
 Role: Director
 ```
