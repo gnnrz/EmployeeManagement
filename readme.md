@@ -154,6 +154,94 @@ Run tests with:
 dotnet test
 ```
 
+## 🖥 Frontend
+
+Frontend application responsible for authentication and employee creation flows.
+
+---
+
+### 🧰 Tech Stack
+
+* React
+* TypeScript
+* Vite
+* Axios
+* React Router DOM
+
+---
+
+### ▶️ Running the Frontend
+
+```bash
+npm install
+npm run dev
+```
+
+The application will be available at:
+
+```
+http://localhost:5173
+```
+
+---
+
+### 🔐 Authentication Flow
+
+* Users authenticate using **email and password**
+* On successful login, a **JWT token** is returned by the backend
+* The token is stored in **localStorage**
+* Protected routes require authentication
+* Unauthenticated users are redirected to the login page
+
+---
+
+### 🛡 Protected Routes
+
+* Routes such as **Create Employee** are protected using a `ProtectedRoute`
+* Access is denied if no JWT token is present
+
+---
+
+### 👤 Employee Creation
+
+After authentication, the user is redirected to the **Create Employee** page.
+
+The form allows creating a new employee with the following fields:
+
+* First name
+* Last name
+* Email
+* Document
+* Birth date
+* Role selection
+* Password
+* Two phone numbers
+
+Business rule validations are handled by the backend, and error messages returned by the API are displayed to the user.
+
+On successful creation:
+
+* A success modal is displayed
+* The user is redirected back to the login page
+
+---
+
+### 📁 Frontend Structure
+
+```text
+frontend/
+├── src/
+│   ├── auth/           # Authentication context and hooks
+│   ├── pages/          # Application pages (Login, Create Employee)
+│   ├── routes/         # Routing and protected routes
+│   ├── shared/         # Axios instance and shared utilities
+│   ├── styles/         # Global styles
+│   └── app/            # App entry point
+├── vite.config.ts
+└── package.json
+```
+
+
 
 
 
